@@ -1,0 +1,111 @@
+
+  { sku: 'SB1', menuIds: ['CF1', 'CF2', 'CF3', 'CF4', 'CF5', 'CF6'] },
+  { sku: 'SB2', menuIds: ['CF1', 'CF2', 'CF3', 'CF4', 'CF5', 'CF6'] },
+  { sku: 'SB4', menuIds: ['T1', 'T2', 'T3', 'T4'] },
+  { sku: 'SB5', menuIds: ['T1', 'T2', 'T3', 'T4'] },
+  { sku: 'SB6', menuIds: ['T5'] },
+  { sku: 'SB7', menuIds: ['T6'] },
+  { sku: 'SB8', menuIds: ['CF2', 'CF3', 'CF5', 'CF6', 'MS1', 'MS2', 'MS3', 'MS4', 'CD1', 'CD2'] },
+  { sku: 'SB9', menuIds: ['CF6', 'MS4', 'CK1'] },
+  { sku: 'SB10', menuIds: ['P1', 'P2', 'CK2'] },
+  { sku: 'SB11', menuIds: ['All drinks', 'desserts'] }, // Special case, all drinks and desserts
+  { sku: 'SB12', menuIds: ['Tea', 'smoothies'] }, // Special case, tea and smoothies
+  { sku: 'SB13', menuIds: ['CF5', 'MS3'] },
+  { sku: 'SB14', menuIds: ['CF6', 'CD1', 'CD2'] },
+  { sku: 'SB15', menuIds: ['CF6', 'MS4'] },
+  { sku: 'SB16', menuIds: ['CF3', 'T4'] },
+  { sku: 'SB17', menuIds: ['S4', 'S1'] },
+  { sku: 'SB18', menuIds: ['S4', 'S1'] },
+  { sku: 'SB19', menuIds: ['J2'] },
+  { sku: 'SB20', menuIds: ['S3'] },
+  { sku: 'SB21', menuIds: ['S6', 'J5'] },
+  { sku: 'SB22', menuIds: ['S7'] },
+  { sku: 'SB23', menuIds: ['J4'] },
+  { sku: 'SB24', menuIds: ['J3'] },
+  { sku: 'SB25', menuIds: ['J6'] },
+  { sku: 'SB26', menuIds: ['J7'] },
+  { sku: 'SB27', menuIds: ['Toppings', 'smoothies'] }, // Special case
+  { sku: 'SB28', menuIds: ['Toppings', 'cakes'] }, // Special case
+  { sku: 'SB29', menuIds: ['Toppings', 'desserts'] }, // Special case
+  { sku: 'SB30', menuIds: ['P1', 'P2', 'CK1', 'CK2', 'CK3', 'CO1', 'CO2', 'CO3', 'TR1', 'TR2', 'TR3'] },
+  { sku: 'SB31', menuIds: ['P1', 'P2', 'CK1', 'CK2', 'CK3', 'CO1', 'CO2', 'CO3', 'TR1', 'TR2', 'TR3'] },
+  { sku: 'SB32', menuIds: ['P1', 'TR3'] },
+  { sku: 'SB33', menuIds: ['CK2', 'CO2', 'CD1', 'CD2', 'MS2', 'MS4'] },
+  { sku: 'SB34', menuIds: ['CK2', 'CO2', 'CD1', 'CD2', 'MS2', 'MS4'] },
+  { sku: 'SB35', menuIds: ['CK1', 'MS4', 'Toppings'] }, // Special Case
+  { sku: 'SB36', menuIds: ['J1', 'S1'] },
+  { sku: 'SB37', menuIds: ['J3', 'S1'] },
+  { sku: 'SB38', menuIds: ['All iced drinks'] }, // Special case
+  { sku: 'SB39', menuIds: ['Smoothies', 'milkshakes'] }, // Special case
+  { sku: 'SB40', menuIds: ['All drinks'] }, // Special case
+  { sku: 'SB41', menuIds: ['All takeaway drinks'] }, // Special case
+  { sku: 'SB42', menuIds: ['All iced drinks'] }, // Special case
+  { sku: 'SB43', menuIds: ['Pastries', 'cakes', 'cookies', 'tarts'] }, // Special case
+  { sku: 'SB44', menuIds: ['Milkshakes', 'cakes', 'desserts'] }, // Special case
+  { sku: 'SB45', menuIds: ['All drinks', 'desserts'] }, // Special case
+
+
+
+
+  // Coffee
+      { menuId: 'CF1',
+      { menuId: 'CF2', 
+      { menuId: 'CF3', 
+      { menuId: 'CF4', 
+      { menuId: 'CF5', 
+      { menuId: 'CF6', 
+
+      // Tea
+      { menuId: 'T1', 
+      { menuId: 'T2', 
+      { menuId: 'T3', 
+      { menuId: 'T4', 
+      { menuId: 'T5', 
+      { menuId: 'T6', 
+
+      // Smoothies
+      { menuId: 'S1', 
+      { menuId: 'S2', 
+      { menuId: 'S3', 
+      { menuId: 'S4', 
+      { menuId: 'S5', 
+      { menuId: 'S6', 
+      { menuId: 'S7', 
+
+      // Milkshakes
+      { menuId: 'MS1', 
+      { menuId: 'MS2', 
+      { menuId: 'MS3', 
+      { menuId: 'MS4', 
+
+      // Juices
+      { menuId: 'J1', 
+      { menuId: 'J2', 
+      { menuId: 'J3'
+      { menuId: 'J4' 
+      { menuId: 'J5' 
+      { menuId: 'J6'
+      { menuId: 'J7',
+
+      // Chocolate Drinks
+      { menuId: 'CD1' 
+      { menuId: 'CD2' 
+
+      // Pastries
+      { menuId: 'P1' 
+      { menuId: 'P2',
+
+      // Cakes
+      { menuId: 'CK1', 
+      { menuId: 'CK2' 
+      { menuId: 'CK3', 
+
+      // Cookies
+      { menuId: 'CO1',
+      { menuId: 'CO2', 
+      { menuId: 'CO3',
+
+      // Tarts
+      { menuId: 'TR1',
+      { menuId: 'TR2', 
+      { menuId: 'TR3'
