@@ -80,41 +80,41 @@ model MenuItemIngredient {
   @@id([menuItemId, stockSku])
 }
 
-// Sale Model
-model Sale {
-  saleId       String   @id
-  date         DateTime
-  totalRevenue Float
+  // Sale Model
+  model Sale {
+    saleId       String   @id
+    date         DateTime
+    totalRevenue Float
 
-  stockItemsSold SaleStockItem[]
-  menuItemsSold  SaleMenuItem[]
-}
+    stockItemsSold SaleStockItem[]
+    menuItemsSold  SaleMenuItem[]
+  }
 
-// Many-to-Many Relation Table for Sale & StockItem
-model SaleStockItem {
-  saleId     String
-  stockSku   String
-  quantity   Int
-  totalPrice Float
+  // Many-to-Many Relation Table for Sale & StockItem
+  model SaleStockItem {
+    saleId     String
+    stockSku   String
+    quantity   Int
+    totalPrice Float
 
-  sale      Sale      @relation(fields: [saleId], references: [saleId])
-  stockItem StockItem @relation(fields: [stockSku], references: [sku])
+    sale      Sale      @relation(fields: [saleId], references: [saleId])
+    stockItem StockItem @relation(fields: [stockSku], references: [sku])
 
-  @@id([saleId, stockSku])
-}
+    @@id([saleId, stockSku])
+  }
 
-// Many-to-Many Relation Table for Sale & MenuItem
-model SaleMenuItem {
-  saleId     String
-  menuId     String
-  quantity   Int
-  totalPrice Float
+  // Many-to-Many Relation Table for Sale & MenuItem
+  model SaleMenuItem {
+    saleId     String
+    menuId     String
+    quantity   Int
+    totalPrice Float
 
-  sale     Sale     @relation(fields: [saleId], references: [saleId])
-  menuItem MenuItem @relation(fields: [menuId], references: [menuId])
+    sale     Sale     @relation(fields: [saleId], references: [saleId])
+    menuItem MenuItem @relation(fields: [menuId], references: [menuId])
 
-  @@id([saleId, menuId])
-}
+    @@id([saleId, menuId])
+  }
 
 // Purchase Model
 model Purchase {
