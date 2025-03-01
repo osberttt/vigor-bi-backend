@@ -4,7 +4,8 @@ import dotenv from "dotenv";
 import userRoutes from "./routes/userRoutes";
 import overviewRoutes from "./routes/overviewRoutes";
 import trendsRoutes from "./routes/trendRoutes";
-
+import costProfitRoutes from "./routes/costProfitRoutes";
+import stockRoutes from "./routes/stockRoutes";
 dotenv.config();
 
 const app = express();
@@ -16,6 +17,8 @@ app.use(cors());
 app.use("/api", userRoutes);
 app.use("/api/overview", overviewRoutes);
 app.use("/api/trends", trendsRoutes);
+app.use("/api/cost-profit",costProfitRoutes)
+app.use("/api/stock-management",stockRoutes)
 
 // Routes
 app.get("/", (req: Request, res: Response) => {
