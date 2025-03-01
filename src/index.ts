@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import userRoutes from "./routes/userRoutes";
 import overviewRoutes from "./routes/overviewRoutes";
+import trendsRoutes from "./routes/trendRoutes";
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(cors());
 app.use("/api", userRoutes);
 app.use("/api/overview", overviewRoutes);
+app.use("/api/trends", trendsRoutes);
 
 // Routes
 app.get("/", (req: Request, res: Response) => {

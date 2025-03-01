@@ -350,3 +350,4 @@ export async function getUniqueSKUs(year: number, month: number) {
         throw new Error('Error fetching unique_skus');
       }
 }
+
