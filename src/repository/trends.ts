@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import { getTotalMenuRevenue, getTotalStockRevenue, getSalesQuantityListForMonth } from "./overview";
 
 const prisma = new PrismaClient();
 
@@ -59,13 +58,9 @@ export async function getSalesQuantityMOM(year:number){
   };
 
   for (let month = 1; month <= 12; month++) {
-    const dailySales = await getSalesQuantityListForMonth(year, month);
-
-    const stockItemQuantity = dailySales.reduce((acc, day) => acc + (day.stockItemQuantity || 0), 0);
-    const menuItemQuantity = dailySales.reduce((acc, day) => acc + (day.menuItemQuantity || 0), 0);
-
-    monthlyData.stock_quantities_mom.push(stockItemQuantity);
-    monthlyData.menu_quantities_mom.push(menuItemQuantity);
+    const sales = await getSalesQuantityInMonth(year, month);
+    monthlyData.stock_quantities_mom.push(sales.stockItemQuantity);
+    monthlyData.menu_quantities_mom.push(sales.menuItemQuantity);
   }
 
   return monthlyData;
@@ -119,4 +114,95 @@ export async function getSalesQuantityYoY(startYear:number, endYear:number){
   }
 
   return yearlyData;
+}
+
+export async function getTotalMenuRevenue(year: number, month: number) {
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0);
+    const saleStockItems = await prisma.saleMenuItem.findMany({
+      where: {
+        sale: {
+          date: {
+            gte: startDate,
+            lte: endDate,
+          }
+        },
+      },
+      select: {
+        quantity: true,
+        totalPrice: true,
+      },
+    });
+  
+    // Calculate the total sum of quantity * totalPrice
+    const totalSum = saleStockItems.reduce((sum, item) => {
+      return sum + item.totalPrice;
+    }, 0);
+  
+    return totalSum;
+  }
+
+
+export async function getTotalStockRevenue(year: number, month: number) {
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0);
+    const saleStockItems = await prisma.saleStockItem.findMany({
+      where: {
+        sale: {
+          date: {
+            gte: startDate,
+            lte: endDate,
+          }
+        },
+      },
+      select: {
+        quantity: true,
+        totalPrice: true,
+      },
+    });
+  
+    // Calculate the total sum of quantity * totalPrice
+    const totalSum = saleStockItems.reduce((sum, item) => {
+      return sum + item.totalPrice;
+    }, 0);
+  
+    return totalSum;
+  }
+
+export async function getSalesQuantityInMonth(year: number, month: number) {
+  const startDate = new Date(year, month - 1, 1);
+  const endDate = new Date(year, month, 0);
+
+  const result: { stockItemQuantity: number; menuItemQuantity: number } = {stockItemQuantity: 0, menuItemQuantity: 0};
+  const stockItems = await prisma.saleStockItem.aggregate({
+    where: {
+      sale: {
+        date: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+    },
+    _sum: {
+      quantity: true,
+    },
+  });
+
+  const menuItems = await prisma.saleMenuItem.aggregate({
+    where: {
+      sale: {
+        date: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+    },
+    _sum: {
+      quantity: true,
+    },
+  });
+
+    result.stockItemQuantity += stockItems._sum.quantity || 0;
+    result.menuItemQuantity += menuItems._sum.quantity || 0;
+  return result;
 }

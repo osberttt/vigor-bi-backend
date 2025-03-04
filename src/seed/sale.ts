@@ -9,12 +9,15 @@ export async function sale(){
     await createDailySales(2022);
     await createDailySales(2023);
     await createDailySales(2024);
+    await createDailySales(2025, new Date());
 }
 
-async function createDailySales(year: number) {
-  function iterateDaysOfYear(year: number, callback: (date: Date) => void) {
+async function createDailySales(year: number, endDate: Date | null = null) {
+  function iterateDaysOfYear(year: number, endDate: Date | null, callback: (date: Date) => void) {
+    if (endDate === null){
+      endDate = new Date(year + 1, 0, 1);
+    }
     const startDate = new Date(year, 0, 1);
-    const endDate = new Date(year + 1, 0, 1);
 
     for (let currentDate = startDate; currentDate < endDate; currentDate.setDate(currentDate.getDate() + 1)) {
       const dateCopy = new Date(currentDate);
@@ -22,7 +25,7 @@ async function createDailySales(year: number) {
     }
   }
 
-  iterateDaysOfYear(year, async (date) => {
+  iterateDaysOfYear(year, endDate, async (date) => {
     const saleId = uuidv4();
     let totalRevenue = 0;
 

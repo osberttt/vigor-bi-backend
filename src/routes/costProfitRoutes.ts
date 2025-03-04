@@ -10,8 +10,6 @@ router.get("/cost-period", async (req: Request, res: Response) => {
 });
 
 router.get("/revenue-period", async (req: Request, res: Response) => {
-    console.log(req.query.start);
-    console.log(req.query.end);
   const startDate = req.query.start as string;
   const endDate = req.query.end as string;
   const data = await getTotalRevenueListPeriod(new Date(startDate), new Date(endDate));

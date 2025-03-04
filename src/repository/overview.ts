@@ -1,17 +1,21 @@
 import { PrismaClient } from "@prisma/client";
+import { sortByDate } from "./utils";
+import { getTotalCostInMonth } from "./trends";
 
 const total_sku = 87;
 const prisma = new PrismaClient();
 
-export async function getSalesQuantityListForMonth(year: number, month: number) {
-  const startDate = new Date(year, month - 1, 1);
-  const endDate = new Date(year, month, 0);
+export async function getSalesQuantityListForMonth(endDate: Date) {
+  const startDate = new Date(endDate);
+  startDate.setDate(endDate.getDate() - 30);
 
   const result: { date: string; stockItemQuantity: number; menuItemQuantity: number }[] = [];
 
-  for (let day = 1; day <= endDate.getDate(); day++) {
-    const dayStart = new Date(year, month - 1, day);
-    const dayEnd = new Date(year, month - 1, day, 23, 59, 59);
+  for (let day = 1; day <= 30; day++) {
+    const dayStart = new Date(startDate);
+    dayStart.setDate(startDate.getDate() + day);
+    const dayEnd = new Date(dayStart);
+    dayEnd.setHours(23, 59, 59);
 
     const stockItems = await prisma.saleStockItem.aggregate({
       where: {
@@ -47,18 +51,17 @@ export async function getSalesQuantityListForMonth(year: number, month: number) 
       menuItemQuantity: menuItems._sum.quantity || 0,
     });
   }
-
-  return result;
+  return sortByDate(result);
 }
 
-export async function getTotalMenuRevenue(year: number, month: number) {
-    const startDate = new Date(year, month - 1, 1);
-    const endDate = new Date(year, month, 0);
+export async function getTotalMenuRevenue(endDate: Date) {
+    const startDate = new Date(endDate);
+    startDate.setDate(endDate.getDate() - 30);
     const saleStockItems = await prisma.saleMenuItem.findMany({
       where: {
         sale: {
           date: {
-            gte: startDate,
+            gt: startDate,
             lte: endDate,
           }
         },
@@ -78,14 +81,14 @@ export async function getTotalMenuRevenue(year: number, month: number) {
   }
 
 
-export async function getTotalStockRevenue(year: number, month: number) {
-    const startDate = new Date(year, month - 1, 1);
-    const endDate = new Date(year, month, 0);
+export async function getTotalStockRevenue(endDate: Date) {
+    const startDate = new Date(endDate);
+    startDate.setDate(endDate.getDate() - 30);
     const saleStockItems = await prisma.saleStockItem.findMany({
       where: {
         sale: {
           date: {
-            gte: startDate,
+            gt: startDate,
             lte: endDate,
           }
         },
@@ -104,15 +107,15 @@ export async function getTotalStockRevenue(year: number, month: number) {
     return totalSum;
   }
 
-export async function getTotalCostListInMonth(year: number, month: number) {
-    const startDate = new Date(year, month - 1, 1); // Start of the month
-    const endDate = new Date(year, month, 0); // End of the month (last day)
+export async function getTotalCostListInMonth(endDate: Date) {
+    const startDate = new Date(endDate);
+    startDate.setDate(endDate.getDate() - 30);
   
     const purchases = await prisma.purchase.findMany({
       where: {
         date: {
-          gte: startDate,  // Greater than or equal to the start date
-          lt: endDate,     // Less than the end date (exclusive)
+          gt: startDate,  // Greater than or equal to the start date
+          lte: endDate,     // Less than the end date (exclusive)
         },
       },
       select: {
@@ -123,22 +126,22 @@ export async function getTotalCostListInMonth(year: number, month: number) {
   
     // Format the result as requested
     const totalCosts = purchases.map(purchase => ({
-      date: purchase.date.toLocaleDateString(), // Format the date as 'MM/DD/YYYY'
+      date: purchase.date.toISOString().split("T")[0], 
       totalCost: purchase.totalCost,
     }));
   
-    return totalCosts;
+    return sortByDate(totalCosts);
   }
 
-export async function getTotalRevenueListInMonth(year: number, month: number) {
-    const startDate = new Date(year, month - 1, 1); // Start of the month
-    const endDate = new Date(year, month, 0); // End of the month (last day)
+export async function getTotalRevenueListInMonth(endDate: Date) {
+    const startDate = new Date(endDate);
+    startDate.setDate(endDate.getDate() - 30);
   
     const sales = await prisma.sale.findMany({
       where: {
         date: {
-          gte: startDate,  // Greater than or equal to the start date
-          lt: endDate,     // Less than the end date (exclusive)
+          gt: startDate,  // Greater than or equal to the start date
+          lte: endDate,     // Less than the end date (exclusive)
         },
       },
       select: {
@@ -149,24 +152,24 @@ export async function getTotalRevenueListInMonth(year: number, month: number) {
   
     // Format the result as requested
     const totalRevenues = sales.map(sale => ({
-      date: sale.date.toLocaleDateString(), // Format the date as 'MM/DD/YYYY'
+      date: sale.date.toISOString().split("T")[0], 
       totalRevenue: sale.totalRevenue,
     }));
   
-    return totalRevenues;
+    return sortByDate(totalRevenues);
   }
 
-export async function getBestSellingMenuItems(year: number, month: number) {
-    const startDate = new Date(year, month - 1, 1); // Start of the month
-    const endDate = new Date(year, month, 0); // End of the month (last day)
+export async function getBestSellingMenuItems(endDate: Date) {
+    const startDate = new Date(endDate);
+    startDate.setDate(endDate.getDate() - 30);
   
     const topSellingMenuItems = await prisma.saleMenuItem.groupBy({
       by: ['menuId'],
       where: {
         sale: {
           date: {
-            gte: startDate,  // Greater than or equal to the start date
-            lt: endDate,     // Less than the end date (exclusive)
+            gt: startDate,  // Greater than or equal to the start date
+            lte: endDate,     // Less than the end date (exclusive)
           },
         },
       },
@@ -195,17 +198,17 @@ export async function getBestSellingMenuItems(year: number, month: number) {
   }
 
 
-export async function getWorstSellingMenuItems(year: number, month: number) {
-    const startDate = new Date(year, month - 1, 1); // Start of the month
-    const endDate = new Date(year, month, 0); // End of the month (last day)
+export async function getWorstSellingMenuItems(endDate: Date) {
+    const startDate = new Date(endDate);
+    startDate.setDate(endDate.getDate() - 30);
   
     const worstSellingMenuItems = await prisma.saleMenuItem.groupBy({
       by: ['menuId'],
       where: {
         sale: {
           date: {
-            gte: startDate,  // Greater than or equal to the start date
-            lt: endDate,     // Less than the end date (exclusive)
+            gt: startDate,  // Greater than or equal to the start date
+            lte: endDate,     // Less than the end date (exclusive)
           },
         },
       },
@@ -233,10 +236,10 @@ export async function getWorstSellingMenuItems(year: number, month: number) {
     return menuItems;
   }
 
-export async function getDailyQuantitySold(menuId: string, year: number, month: number) {
+export async function getDailyQuantitySold(menuId: string, endDate: Date) {
     // Start and end dates of the given month
-    const startDate = new Date(year, month - 1, 1); // First day of the month
-    const endDate = new Date(year, month, 0); // Last day of the month (exclusive)
+    const startDate = new Date(endDate);
+    startDate.setDate(endDate.getDate() - 30);
   
     try {
       const sales = await prisma.saleMenuItem.findMany({
@@ -244,8 +247,8 @@ export async function getDailyQuantitySold(menuId: string, year: number, month: 
           menuId: menuId, // Filter by the given item (menuId)
           sale: {
             date: {
-              gte: startDate,  // Greater than or equal to the start date
-              lt: endDate,     // Less than the end date (exclusive)
+              gt: startDate,  // Greater than or equal to the start date
+              lte: endDate,     // Less than the end date (exclusive)
             },
           },
         },
@@ -260,8 +263,9 @@ export async function getDailyQuantitySold(menuId: string, year: number, month: 
       });
   
       // Create a list of daily quantities sold (initialize as 0 for every day of the month)
-      const dailyQuantities = Array.from({ length: endDate.getDate() }, () => 0);
-  
+      const dailyQuantities = Array.from({ length: 30 }, () => 0);
+      // sort by date
+      sales.sort((a, b) => a.sale.date.getTime() - b.sale.date.getTime());
       // Aggregate the sales by day
       sales.forEach(sale => {
         const saleDate = sale.sale.date.getDate(); // Get the day of the sale (1 to 31)
@@ -275,7 +279,9 @@ export async function getDailyQuantitySold(menuId: string, year: number, month: 
     }
   }
   
-export async function getUniqueSKUs(year: number, month: number) {
+export async function getUniqueSKUs(endDate: Date) {
+    const startDate = new Date(endDate);
+    startDate.setDate(endDate.getDate() - 30);
     try {
         // Initialize an array to store the count of no_sale_item for each day
         const noSaleItemsPerDay: { date: string, no_sale_item: number }[] = [];
@@ -285,8 +291,8 @@ export async function getUniqueSKUs(year: number, month: number) {
           where: {
             sale: {
               date: {
-                gte: new Date(year, month - 1, 1), // Start of the month
-                lt: new Date(year, month, 1), // Start of the next month
+                gt: startDate,
+                lte: endDate
               },
             },
           },
@@ -314,8 +320,8 @@ export async function getUniqueSKUs(year: number, month: number) {
             where: {
               sale: {
                 date: {
-                  gte: new Date(year, month - 1, 1), // Start of the month
-                  lt: new Date(year, month, 1), // Start of the next month
+                  gt: startDate,
+                  lte: endDate
                 },
               },
             },
@@ -343,7 +349,7 @@ export async function getUniqueSKUs(year: number, month: number) {
         for (let i = 0; i < noSaleItemsPerDay.length; i++) {
             uniqueSKUs.push({ date: noSaleItemsPerDay[i].date, skus: total_sku - noSaleItemsPerDay[i].no_sale_item });
         }
-        return uniqueSKUs;
+        return sortByDate(uniqueSKUs);
     
       } catch (error) {
         console.error('Error fetching unique skus:', error);
@@ -351,3 +357,76 @@ export async function getUniqueSKUs(year: number, month: number) {
       }
 }
 
+
+export async function getLastMonthData(endDate: Date){
+  endDate.setDate(endDate.getDate() - 30);
+
+  const cost = await getTotalCostValueInPeriod(endDate);
+  const revenue = await getTotalMenuRevenue(endDate) + await getTotalStockRevenue(endDate);
+  const quantity = (await getSalesQuantityInPeriod(endDate)).menuItemQuantity + (await getSalesQuantityInPeriod(endDate)).stockItemQuantity;
+  const profit = revenue - cost;
+
+  return {cost,revenue,quantity,profit};
+}
+
+export async function getTotalCostValueInPeriod(endDate: Date) {
+  const startDate = new Date(endDate);
+  startDate.setDate(endDate.getDate() - 30);
+
+  const purchases = await prisma.purchase.findMany({
+    where: {
+      date: {
+        gte: startDate,  // Greater than or equal to the start date
+        lt: endDate,     // Less than the end date (exclusive)
+      },
+    },
+    select: {
+      date: true,
+      totalCost: true,
+    },
+  });
+   // Calculate the total sum of quantity * totalPrice
+   const totalCost = purchases.reduce((sum, item) => {
+    return sum + item.totalCost;
+  }, 0);
+
+  return totalCost;
+}
+
+export async function getSalesQuantityInPeriod(endDate: Date) {
+  const startDate = new Date(endDate);
+  startDate.setDate(endDate.getDate() - 30);
+
+  const result: { stockItemQuantity: number; menuItemQuantity: number } = {stockItemQuantity: 0, menuItemQuantity: 0};
+  const stockItems = await prisma.saleStockItem.aggregate({
+    where: {
+      sale: {
+        date: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+    },
+    _sum: {
+      quantity: true,
+    },
+  });
+
+  const menuItems = await prisma.saleMenuItem.aggregate({
+    where: {
+      sale: {
+        date: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+    },
+    _sum: {
+      quantity: true,
+    },
+  });
+
+    result.stockItemQuantity += stockItems._sum.quantity || 0;
+    result.menuItemQuantity += menuItems._sum.quantity || 0;
+  return result;
+}

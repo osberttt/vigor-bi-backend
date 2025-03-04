@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { sortByDate } from "./utils";
 
 const prisma = new PrismaClient();
 
@@ -7,8 +8,8 @@ export async function getTotalRevenueListPeriod(startDate: Date, endDate: Date) 
     const sales = await prisma.sale.findMany({
       where: {
         date: {
-          gte: startDate,  // Greater than or equal to the start date
-          lt: endDate,     // Less than the end date (exclusive)
+          gt: startDate,  // Greater than or equal to the start date
+          lte: endDate,     // Less than the end date (exclusive)
         },
       },
       select: {
@@ -19,11 +20,11 @@ export async function getTotalRevenueListPeriod(startDate: Date, endDate: Date) 
   
     // Format the result as requested
     const totalRevenues = sales.map(sale => ({
-      date: sale.date.toLocaleDateString(), // Format the date as 'MM/DD/YYYY'
+      date: sale.date.toISOString().split("T")[0], // Format the date as 'MM/DD/YYYY'
       totalRevenue: sale.totalRevenue,
     }));
   
-    return totalRevenues;
+    return sortByDate(totalRevenues);
   }
 
 export async function getTotalCostListPeriod(startDate: Date, endDate: Date) {
@@ -31,8 +32,8 @@ export async function getTotalCostListPeriod(startDate: Date, endDate: Date) {
     const purchases = await prisma.purchase.findMany({
       where: {
         date: {
-          gte: startDate,  // Greater than or equal to the start date
-          lt: endDate,     // Less than the end date (exclusive)
+          gt: startDate,  // Greater than or equal to the start date
+          lte: endDate,     // Less than the end date (exclusive)
         },
       },
       select: {
@@ -43,9 +44,9 @@ export async function getTotalCostListPeriod(startDate: Date, endDate: Date) {
   
     // Format the result as requested
     const totalCosts = purchases.map(purchase => ({
-      date: purchase.date.toLocaleDateString(), // Format the date as 'MM/DD/YYYY'
+      date: purchase.date.toISOString().split("T")[0], // Format the date as 'MM/DD/YYYY'
       totalCost: purchase.totalCost,
     }));
   
-    return totalCosts;
+    return sortByDate(totalCosts);
   }

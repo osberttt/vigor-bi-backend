@@ -9,23 +9,25 @@ export async function purchase() {
     await createDailyPurchases(2022);
     await createDailyPurchases(2023);
     await createDailyPurchases(2024);
+    await createDailyPurchases(2025, new Date());
 }
 
 function clamp(value: number, min: number, max: number): number {
     return Math.max(min, Math.min(value, max));
 }
 
-async function createDailyPurchases(year : number) {
-    function iterateDaysOfYear(year: number, callback: (date: Date) => void) {
-        const startDate = new Date(year, 0, 1);
-        const endDate = new Date(year + 1, 0, 1);
-    
+async function createDailyPurchases(year : number, endDate: Date | null = null) {
+    function iterateDaysOfYear(year: number,endDate: Date | null = null, callback: (date: Date) => void) {
+        if (endDate === null){
+          endDate = new Date(year + 1, 0, 1);
+        }
+        const startDate = new Date(year, 0, 1);    
         for (let currentDate = startDate; currentDate < endDate; currentDate.setDate(currentDate.getDate() + 1)) {
           const dateCopy = new Date(currentDate);
           callback(dateCopy);
         }
       }
-  iterateDaysOfYear(year, async (date) => {
+  iterateDaysOfYear(year,endDate, async (date) => {
     const purchaseId = uuidv4();
     let totalCost = 0;
 
