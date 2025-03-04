@@ -1,5 +1,4 @@
 import { Router, Request, Response } from "express";
-import { getTotalCostListPeriod, getTotalRevenueListPeriod } from "../repository/cost_profit";
 import { getStockItems } from "../repository/stock";
 const router = Router();
 

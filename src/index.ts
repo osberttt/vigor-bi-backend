@@ -5,6 +5,7 @@ import overviewRoutes from "./routes/overviewRoutes";
 import trendsRoutes from "./routes/trendRoutes";
 import costProfitRoutes from "./routes/costProfitRoutes";
 import stockRoutes from "./routes/stockRoutes";
+import aiRoutes from "./routes/aiRoutes";
 dotenv.config();
 
 const app = express();
@@ -17,6 +18,7 @@ app.use("/api/overview", overviewRoutes);
 app.use("/api/trends", trendsRoutes);
 app.use("/api/cost-profit",costProfitRoutes)
 app.use("/api/stock-management",stockRoutes)
+app.use("/api/ai-insight",aiRoutes)
 
 // Routes
 app.get("/", (req: Request, res: Response) => {
