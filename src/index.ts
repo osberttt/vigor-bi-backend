@@ -18,7 +18,7 @@ app.use("/api/overview", overviewRoutes);
 app.use("/api/trends", trendsRoutes);
 app.use("/api/cost-profit",costProfitRoutes)
 app.use("/api/stock-management",stockRoutes)
-app.use("/api/ai-insight",aiRoutes)
+app.use("/api/ai-insights",aiRoutes)
 
 // Routes
 app.get("/", (req: Request, res: Response) => {
