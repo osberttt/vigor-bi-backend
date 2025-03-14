@@ -2,12 +2,14 @@
 CREATE TABLE `StockItem` (
     `sku` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
-    `category` ENUM('DAIRY', 'GRAIN', 'SWEETENER', 'FLAVORING', 'FRUIT', 'NUTS', 'BEVERAGE', 'PACKAGING', 'OTHER') NOT NULL,
+    `category` ENUM('COFFEE', 'TEA', 'DAIRY', 'SWEETENER', 'FLAVORING', 'FRUIT', 'NUTS', 'GRAIN', 'CHOCOLATE', 'JUICE', 'ICE', 'PACKAGING', 'OTHER') NOT NULL,
     `quantityAvailable` INTEGER NOT NULL,
-    `unitPrice` DOUBLE NOT NULL,
+    `purchasePrice` DOUBLE NOT NULL,
+    `sellingPrice` DOUBLE NOT NULL,
     `lastUpdated` DATETIME(3) NOT NULL,
     `stockLevelThreshold` INTEGER NOT NULL,
     `standardReorderQuantity` INTEGER NOT NULL,
+    `popularityScore` DOUBLE NOT NULL,
 
     PRIMARY KEY (`sku`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -16,6 +18,7 @@ CREATE TABLE `StockItem` (
 CREATE TABLE `MenuItem` (
     `menuId` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
+    `category` ENUM('COFFEE', 'TEA', 'SMOOTHIES', 'MILKSHAKES', 'JUICE', 'CHOCOLATE_DRINKS', 'PASTRIES', 'CAKES', 'COOKIES', 'TARTS') NOT NULL,
     `price` DOUBLE NOT NULL,
     `popularityScore` DOUBLE NOT NULL,
 
@@ -63,12 +66,20 @@ CREATE TABLE `SaleMenuItem` (
 -- CreateTable
 CREATE TABLE `Purchase` (
     `purchaseId` VARCHAR(191) NOT NULL,
-    `stockSku` VARCHAR(191) NOT NULL,
-    `quantity` INTEGER NOT NULL,
-    `totalCost` DOUBLE NOT NULL,
     `date` DATETIME(3) NOT NULL,
+    `totalCost` DOUBLE NOT NULL,
 
     PRIMARY KEY (`purchaseId`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `PurchaseStockItem` (
+    `purchaseId` VARCHAR(191) NOT NULL,
+    `stockSku` VARCHAR(191) NOT NULL,
+    `quantity` INTEGER NOT NULL,
+    `totalPrice` DOUBLE NOT NULL,
+
+    PRIMARY KEY (`purchaseId`, `stockSku`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
@@ -90,4 +101,7 @@ ALTER TABLE `SaleMenuItem` ADD CONSTRAINT `SaleMenuItem_saleId_fkey` FOREIGN KEY
 ALTER TABLE `SaleMenuItem` ADD CONSTRAINT `SaleMenuItem_menuId_fkey` FOREIGN KEY (`menuId`) REFERENCES `MenuItem`(`menuId`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Purchase` ADD CONSTRAINT `Purchase_stockSku_fkey` FOREIGN KEY (`stockSku`) REFERENCES `StockItem`(`sku`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `PurchaseStockItem` ADD CONSTRAINT `PurchaseStockItem_purchaseId_fkey` FOREIGN KEY (`purchaseId`) REFERENCES `Purchase`(`purchaseId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PurchaseStockItem` ADD CONSTRAINT `PurchaseStockItem_stockSku_fkey` FOREIGN KEY (`stockSku`) REFERENCES `StockItem`(`sku`) ON DELETE RESTRICT ON UPDATE CASCADE;

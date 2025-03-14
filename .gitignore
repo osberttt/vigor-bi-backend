@@ -25,3 +25,5 @@ build/
 # Miscellaneous
 .DS_Store
 Thumbs.db
+
+prisma/migration/
