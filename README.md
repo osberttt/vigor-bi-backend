@@ -59,6 +59,7 @@ This is a school project for a **Business Intelligence Inventory Dashboard** bui
 ## Live Demo
 
 This is a static live demo of the project: [Live Demo](https://splendid-dolphin-5c913e.netlify.app/)
+
 Please note that not all features are available in this demo. To access the full functionality, follow the setup instructions below to run the project locally.
 
 ## Getting Started
